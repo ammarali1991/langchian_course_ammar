@@ -27,7 +27,7 @@ from langchain_tavily import TavilySearch
 # إنشاء نموذج اللغة الكبير (LLM) باستخدام GPT-5 من OpenAI
 # temperature=0 تعني أن النموذج سيكون دقيقاً وغير عشوائي
 llm = ChatOpenAI(model="gpt-5", temperature=0)
-
+#test
 # تجميع الأدوات في قائمة لتمريرها إلى الوكيل
 tools = [TavilySearch()]  # إضافة أداة البحث عبر الإنترنت إلى قائمة الأدوات
 
