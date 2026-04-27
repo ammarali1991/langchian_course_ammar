@@ -13,7 +13,10 @@ def main():
     
     # البيانات المدخلة (Input Data)
     information = """
-    ammar  (/ˈiːlɒn/ ammar alchaeeb-lon; born June 28, 1991 in lattakia with white color) is a businessman...
+    Shakira Isabel Mebarak Ripoll[a] (/ʃəˈkɪərə/ shə-KEER-ə, Spanish: [ʃaˈkiɾa isaˈβel meβaˈɾak riˈpol];
+    born 2 February 1977)[1] is a Colombian singer, songwriter, dancer, and record producer. Referred to
+    as the "Queen of Latin Music",[b] she has had a significant impact on the musical landscape of Latin America and has been credited with popularizing Hispanophone music globally,[14] contributing to increased learning and use of the Spanish language worldwide.[15] She is also credited with opening the doors of the international market for other Latin artists.[16][17] Her accolades include 4 Grammy Awards and 15 Latin Grammy Awards.
+    Shakira made her recording debut with Sony Music Colombia at the age of 14. She rose to prominence with the albums Pies Descalzos (1995) and Dónde Están los Ladrones? (1998). Her first English release, Laundry Service (2001), sold over 13 million copies worldwide,[18] becoming the best-selling album by a female Latin artist. Her success was further solidified with the Spanish-language albums Fijación Oral, Vol. 1 (2005), Sale el Sol (2010), El Dorado (2017), and Las Mujeres Ya No Lloran (2024), all of which topped the Billboard Top Latin Albums chart, making her the first woman with number-one albums across four different decades. Her English albums Oral Fixation, Vol. 2 (2005), She Wolf (2009), and Shakira (2014) achieved platinum status worldwide.
     """
 
     # ═══════════════════════════════════════════════════════════════════════
