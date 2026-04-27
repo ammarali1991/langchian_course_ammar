@@ -20,35 +20,16 @@ from langchain_openai import ChatOpenAI
 from langchain.tools import tool
 
 # استيراد TavilyClient للبحث عبر الإنترنت باستخدام محرك Tavily
-from tavily import TavilyClient
+#from tavily import TavilyClient
+from langchain_tavily import TavilySearch
 
-# إنشاء كائن TavilyClient للتواصل مع خدمة البحث Tavily
-tavily = TavilyClient()
-
-# تعريف أداة البحث باستخدام ديكوراتور @tool
-@tool
-def search(query: str) -> str:
-    """
-    Tool that searches over internet
-    
-    Args:
-    query: The query to search for
-    
-    Returns:
-    The search result
-    """
-    # طباعة رسالة توضح ما يتم البحث عنه حالياً
-    print(f"Searching for {query}")
-    
-    # استدعاء خدمة Tavily للبحث وإرجاع النتائج
-    return tavily.search(query)
 
 # إنشاء نموذج اللغة الكبير (LLM) باستخدام GPT-5 من OpenAI
 # temperature=0 تعني أن النموذج سيكون دقيقاً وغير عشوائي
 llm = ChatOpenAI(model="gpt-5", temperature=0)
 
 # تجميع الأدوات في قائمة لتمريرها إلى الوكيل
-tools = [search]
+tools = [TavilySearch()]  # إضافة أداة البحث عبر الإنترنت إلى قائمة الأدوات
 
 # إنشاء وكيل ذكي يجمع بين نموذج اللغة والأدوات المتاحة
 agent = create_agent(model=llm, tools=tools)
