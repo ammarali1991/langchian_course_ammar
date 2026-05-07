@@ -29,24 +29,24 @@ def apply_discount(price: float, discount_tier: str) -> float:
     discount = discount_percentages.get(discount_tier, 0)
     return round(price * (1 - discount / 100), 2)
 
-# Difference 2: Without @tool, we must MANUALLY define the JSON schema for each function.
-# This is exactly what LangChain's @tool decorator generates automatically
-# from the function's type hints and docstring.
+# 🔑 الفرق الجوهري: بدلاً من @tool decorator نكتب JSON schema يدوياً
+# هذا هو ما ترسله للـ LLM ليعرف الأدوات المتاحة وكيف يستخدمها
 tools_for_llm = [
     {
-        "type": "function",
+        "type": "function",  # نوع الأداة: دالة
         "function": {
-            "name": "get_product_price",
+            "name": "get_product_price",  # اسم الدالة الذي سيطلبه الـ LLM
             "description": "Look up the price of a product in the catalog.",
+            # 📋 الـ schema: تخبر الـ LLM بالـ parameters المطلوبة ونوع كل واحد
             "parameters": {
-                "type": "object",
+                "type": "object",  # المعاملات تأتي كـ object
                 "properties": {
                     "product": {
-                        "type": "string",
+                        "type": "string",  # نوع المعامل
                         "description": "The product name, e.g. 'laptop', 'headphones', 'keyboard'",
                     },
                 },
-                "required": ["product"],
+                "required": ["product"],  # المعاملات الإجبارية
             },
         },
     },
@@ -64,7 +64,7 @@ tools_for_llm = [
                         "description": "The discount tier: 'bronze', 'silver', or 'gold'",
                     },
                 },
-                "required": ["price", "discount_tier"],
+                "required": ["price", "discount_tier"],  # الدالة تحتاج المعاملين
             },
         },
     },
@@ -100,6 +100,8 @@ def ollama_chat_traced(messages):
 
 @traceable(name="Ollama Agent Loop")
 def run_agent(question: str):
+    # 🔑 ربط اسم الأداة (string من الـ schema) بالدالة الفعلية (callable)
+    # الـ LLM يرجع اسم الأداة كـ string، ونحن نبحث هنا عن الدالة المناسبة
     tools_dict = {
         "get_product_price": get_product_price,
         "apply_discount": apply_discount,
@@ -139,6 +141,9 @@ def run_agent(question: str):
         response = ollama_chat_traced(messages=messages)
         ai_message = response.message
 
+        # 🔑 هيكل الـ tool call القادم من Ollama (بدون LangChain):
+        # ai_message.tool_calls عبارة عن list من ToolCall objects
+        # كل ToolCall يحتوي على .function.name و .function.arguments (dict)
         tool_calls = ai_message.tool_calls
 
         # If no tool calls, this is the final answer
@@ -148,27 +153,34 @@ def run_agent(question: str):
 
         # Process only the FIRST tool call — force one tool per iteration
         tool_call = tool_calls[0]
-        # Difference 6: Attribute access (.function.name) instead of dict access (.get("name"))
+        # 🔑 استخراج اسم الأداة والـ arguments من الـ ToolCall
+        # الفرق هنا: نستخدم attribute access (.function.name)
+        # بدلاً من dict access (["function"]["name"]) كما في LangChain
         tool_name = tool_call.function.name
-        tool_args = tool_call.function.arguments
+        tool_args = tool_call.function.arguments  # هذا dict جاهز: {"product": "laptop"}
 
         print(f"  [Tool Selected] {tool_name} with args: {tool_args}")
 
+        # 🔑 استدعاء الدالة الفعلية باستخدام الـ dict lookup
         tool_to_use = tools_dict.get(tool_name)
         if tool_to_use is None:
             raise ValueError(f"Tool '{tool_name}' not found")
 
-        # Difference 7: Direct function call instead of tool.invoke()
+        # 🔑 تنفيذ الدالة مع تفريغ الـ arguments كـ kwargs: **tool_args
+        # مثال: tool_to_use(**{"product": "laptop"}) => get_product_price(product="laptop")
         observation = tool_to_use(**tool_args)
 
 
         print(f"  [Tool Result] {observation}")
 
+        # 🔑 إعادة نتيجة الأداة للـ LLM في السياق
+        # نضيف رسالة الـ assistant (التي طلبت الأداة)
         messages.append(ai_message)
+        # ثم رسالة tool تحتوي على النتيجة
         messages.append(
             {
                 "role": "tool",
-                "content": str(observation),
+                "content": str(observation),  # النتيجة كـ string
             }
         )
 
