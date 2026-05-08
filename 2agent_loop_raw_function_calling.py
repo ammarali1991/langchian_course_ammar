@@ -9,7 +9,7 @@ MAX_ITERATIONS = 10
 MODEL = "qwen3:1.7b"
 
 
-# --- Tools (LangChain @tool decorator) ---
+# --- Tools ( with out LangChain @tool decorator) ---
 
 
 @traceable(run_type="tool")
