@@ -115,6 +115,19 @@ if __name__ == "__main__":
 
     print("- Better for production use")
     print("=" * 70)
+     # ========================================================================
+    # Option 2: Use implementation WITH LCEL (Better Approach)
+    # ========================================================================
+    print("\n" + "=" * 70)
+    print("IMPLEMENTATION 2: With LCEL - Better Approach")
+    print("=" * 70)
+    print("Why LCEL is better:")
+    print("- More concise and declarative")
+    print("- Built-in streaming: chain.stream()")
+    print("- Built-in async: chain.ainvoke()")
+    print("- Easy to compose with other chains")
+    print("- Better for production use")
+    print("=" * 70)
 
     chain_with_lcel = create_retrieval_chain_with_lcel()
     result_with_lcel = chain_with_lcel.invoke({"question": query})
